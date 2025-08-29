@@ -6,12 +6,11 @@
     <title>Log Fájl Elemző</title>
     
     <style>
-        /* ÚJ: Sötét téma színpaletta */
         :root {
             --main-green: #3cb882;
-            --dark-bg: #2d3436; /* Háttér színe */
-            --medium-bg: #4a5255; /* A kártya színe */
-            --light-text: #dfe6e9; /* A szöveg színe */
+            --dark-bg: #2d3436;
+            --medium-bg: #4a5255;
+            --light-text: #dfe6e9;
             --dark-text: #2d3436;
             --border-radius: 12px;
             --box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
@@ -28,12 +27,11 @@
             }
         }
 
-        /* ÁTÍRT: Sötétszürke háttér */
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             background-color: var(--dark-bg);
             background-image: linear-gradient(180deg, #383f41 0%, #2d3436 100%);
-            color: var(--light-text); /* Alapértelmezett szövegszín a világos */
+            color: var(--light-text);
             margin: 0;
             padding: 20px;
             display: flex;
@@ -43,7 +41,6 @@
             box-sizing: border-box;
         }
 
-        /* ÁTÍRT: A konténer most egy világosabb szürke lap */
         .container {
             background-color: var(--medium-bg);
             border: 1px solid rgba(255, 255, 255, 0.1);
@@ -69,7 +66,6 @@
             margin-bottom: 30px;
         }
 
-        /* ÁTÍRT: A cím szövegszíne is világos */
         .header h1 {
             margin: 0;
             color: var(--light-text);
@@ -95,7 +91,7 @@
 
         .custom-file-button {
             background-color: var(--main-green);
-            color: var(--dark-text); /* Sötét szöveg a zöld gombon a jobb kontrasztért */
+            color: var(--dark-text);
             padding: 12px 25px;
             border-radius: 8px;
             font-size: 16px;
@@ -111,19 +107,30 @@
             transform: translateY(-3px);
             box-shadow: 0 6px 15px rgba(60, 184, 130, 0.3);
         }
-
-        #fileName {
-            margin-top: 15px;
-            font-style: italic;
+        
+        /* ÚJ: A fájl lista stílusa */
+        #fileList {
+            list-style: none;
+            padding: 0;
+            margin: 20px 0 0 0;
+            text-align: left;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        #fileList li {
+            background-color: rgba(0, 0, 0, 0.2);
+            padding: 10px 15px;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            font-size: 14px;
             color: var(--light-text);
-            opacity: 0.6;
-            min-height: 20px;
+            opacity: 0.8;
         }
 
-        /* Az eredmény kártya maradhat zöld, jól mutat a sötét háttéren */
         .result-card {
             background-color: var(--main-green);
-            color: var(--dark-text); /* Sötét szöveg a zöld alapon */
+            color: var(--dark-text);
             padding: 20px;
             margin-top: 30px;
             border-radius: var(--border-radius);
@@ -154,17 +161,17 @@
             <h1>Log Fájl Elemző</h1>
         </div>
         
-        <p>Töltsd fel a log fájlt, és az eszköz megszámolja, hányszor fordult elő a sikeres ügyzárás.</p>
+        <p>Tölts fel egy vagy több log fájlt, és az eszköz megszámolja a sikeres ügyzárásokat.</p>
         
         <label for="fileInput" class="custom-file-button">
-            Log fájl kiválasztása
+            Fájl(ok) kiválasztása
         </label>
-        <input type="file" id="fileInput" accept=".log, .txt">
+        <input type="file" id="fileInput" accept=".log, .txt" multiple>
         
-        <div id="fileName">Nincs fájl kiválasztva</div>
+        <ul id="fileList"></ul>
 
         <div class="result-card" id="resultCard">
-            <p id="resultText">Sikeres ügyzárások száma:</p>
+            <p id="resultText">Sikeres ügyzárások összesen:</p>
             <p id="resultCount">0</p>
         </div>
     </div>
@@ -172,26 +179,65 @@
     <script>
         const SEARCH_STRING = "[SeeMTA - Siker]: Sikeresen lezártad az ügyet!";
         const fileInput = document.getElementById('fileInput');
-        const fileNameDisplay = document.getElementById('fileName');
+        const fileListDisplay = document.getElementById('fileList');
         const resultCard = document.getElementById('resultCard');
         const resultCountDisplay = document.getElementById('resultCount');
+
         fileInput.addEventListener('change', (event) => {
-            const file = event.target.files[0];
-            if (file) {
-                fileNameDisplay.textContent = `Kiválasztott fájl: ${file.name}`;
+            const files = event.target.files;
+
+            if (files.length === 0) {
+                fileListDisplay.innerHTML = '<li>Nincs fájl kiválasztva</li>';
+                resultCard.style.display = 'none';
+                return;
+            }
+
+            // Reseteljük a felületet
+            fileListDisplay.innerHTML = '';
+            resultCard.style.display = 'none';
+            
+            let totalOccurrences = 0;
+            let filesProcessed = 0;
+
+            // Végigmegyünk az összes kiválasztott fájlon
+            for (const file of files) {
+                // Létrehozunk egy listaelem-et minden fájlnak
+                const listItem = document.createElement('li');
+                listItem.textContent = `Elemzés: ${file.name}...`;
+                fileListDisplay.appendChild(listItem);
+
+                // Minden fájlhoz saját FileReader-t indítunk
                 const reader = new FileReader();
                 reader.readAsText(file);
+                
+                // Amikor a fájl beolvasása befejeződött
                 reader.onload = (e) => {
                     const content = e.target.result;
                     const safeSearchString = SEARCH_STRING.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
                     const occurrences = content.match(new RegExp(safeSearchString, 'g')) || [];
-                    const count = occurrences.length;
-                    resultCountDisplay.textContent = count;
-                    resultCard.style.display = 'block';
+                    const countInFile = occurrences.length;
+
+                    // Frissítjük a fájlhoz tartozó listaelemet a találattal
+                    listItem.textContent = `${file.name}: ${countInFile} találat`;
+
+                    totalOccurrences += countInFile;
+                    filesProcessed++;
+
+                    // Ellenőrizzük, hogy ez volt-e az utolsó fájl
+                    if (filesProcessed === files.length) {
+                        resultCountDisplay.textContent = totalOccurrences;
+                        resultCard.style.display = 'block';
+                    }
                 };
+                
+                // Hiba kezelése
                 reader.onerror = () => {
-                    fileNameDisplay.textContent = 'Hiba történt a fájl olvasása közben.';
-                    resultCard.style.display = 'none';
+                    listItem.textContent = `Hiba a(z) ${file.name} olvasása közben.`;
+                    filesProcessed++;
+                    if (filesProcessed === files.length) {
+                        resultCountDisplay.textContent = totalOccurrences;
+                        resultCard.style.display = 'block';
+                    }
                 };
             }
         });
