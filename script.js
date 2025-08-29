@@ -1,5 +1,3 @@
-// script.js
-
 const SEARCH_STRING = "[SeeMTA - Siker]: Sikeresen lezártad az ügyet!";
 
 const fileInput = document.getElementById('fileInput');
