@@ -5,16 +5,148 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Log Fájl Elemző</title>
     
-    <link rel="stylesheet" href="stilus.css">
+    <style>
+        /* CSS Változók a könnyű szerkeszthetőségért */
+        :root {
+            --main-green: #3cb882;
+            --light-gray: #f0f2f5;
+            --dark-gray: #555;
+            --text-color: #333;
+            --white: #ffffff;
+            --border-radius: 12px;
+            --box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Alapvető oldalszerkezet és betűtípus */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--light-gray);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        /* Fő konténer, ami középen van */
+        .container {
+            background-color: var(--white);
+            padding: 40px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            text-align: center;
+            max-width: 600px;
+            width: 100%;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Fejléc az ikonnal és a címmel */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px; /* Térköz az ikon és a cím között */
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            margin: 0;
+            color: var(--dark-gray);
+            font-size: 28px;
+        }
+
+        /* Fa SVG Ikon stílusa */
+        .tree-icon {
+            width: 40px;
+            height: 40px;
+            color: var(--main-green);
+        }
+
+        p {
+            color: var(--dark-gray);
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        /* Egyedi fájl feltöltő gomb */
+        #fileInput {
+            display: none; /* Az alapértelmezett input elrejtése */
+        }
+
+        .custom-file-button {
+            background-color: var(--main-green);
+            color: var(--white);
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+        
+        .custom-file-button:hover {
+            background-color: #34a071; /* Sötétebb árnyalat hoverre */
+            transform: scale(1.05);
+        }
+
+        /* Fájlnév kijelző */
+        #fileName {
+            margin-top: 15px;
+            font-style: italic;
+            color: #777;
+            min-height: 20px;
+        }
+
+        /* Eredményt megjelenítő kártya */
+        .result-card {
+            background-color: var(--main-green);
+            color: var(--white);
+            padding: 20px;
+            margin-top: 30px;
+            border-radius: var(--border-radius);
+            display: none; /* Alapból rejtett */
+            animation: fadeIn 0.5s ease;
+        }
+
+        /* Animáció az eredmény megjelenéséhez */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .result-card #resultText {
+            font-size: 18px;
+            font-weight: 500;
+            margin: 0;
+        }
+
+        .result-card #resultCount {
+            font-size: 48px;
+            font-weight: bold;
+            margin: 10px 0 0 0;
+        }
+    </style>
 </head>
 <body>
 
     <div class="container">
         <div class="header">
-            <svg class="tree-icon" ...> ... </svg>
+            <svg class="tree-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M17 14h-3v6h-4v-6H7l5-5 5 5zM7 3h10v2H7z"/>
+            </svg>
             <h1>Log Fájl Elemző</h1>
         </div>
-        <p>Töltsd fel a log fájlt...</p>
+        
+        <p>Töltsd fel a log fájlt, és az eszköz megszámolja, hányszor fordult elő a sikeres ügyzárás.</p>
         
         <label for="fileInput" class="custom-file-button">
             Log fájl kiválasztása
@@ -29,6 +161,51 @@
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <script>
+        // A szöveg, amire keresünk
+        const SEARCH_STRING = "[SeeMTA - Siker]: Sikeresen lezártad az ügyet!";
+
+        // A HTML elemek elérése a kódból
+        const fileInput = document.getElementById('fileInput');
+        const fileNameDisplay = document.getElementById('fileName');
+        const resultCard = document.getElementById('resultCard');
+        const resultCountDisplay = document.getElementById('resultCount');
+
+        // Eseményfigyelő: Mi történjen, ha a felhasználó kiválaszt egy fájlt
+        fileInput.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+
+            if (file) {
+                // Fájlnév kiírása
+                fileNameDisplay.textContent = `Kiválasztott fájl: ${file.name}`;
+                
+                // Fájl olvasó inicializálása
+                const reader = new FileReader();
+                reader.readAsText(file);
+
+                // Amikor a beolvasás sikeresen befejeződött
+                reader.onload = (e) => {
+                    const content = e.target.result;
+                    
+                    // A keresendő szövegben lévő speciális karakterek "escapelése" a biztonságos kereséshez
+                    const safeSearchString = SEARCH_STRING.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                    
+                    // Keresés és az előfordulások megszámolása
+                    const occurrences = content.match(new RegExp(safeSearchString, 'g')) || [];
+                    const count = occurrences.length;
+
+                    // Eredmény megjelenítése a kártyán
+                    resultCountDisplay.textContent = count;
+                    resultCard.style.display = 'block';
+                };
+
+                // Hiba esetén
+                reader.onerror = () => {
+                    fileNameDisplay.textContent = 'Hiba történt a fájl olvasása közben.';
+                    resultCard.style.display = 'none';
+                };
+            }
+        });
+    </script>
 </body>
 </html>
