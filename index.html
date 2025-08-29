@@ -2,10 +2,33 @@
 <html lang="hu">
 <head>
     <meta charset="UTF-8">
-    <title>Az én oldalam</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log Fájl Elemző</title>
+    
+    <link rel="stylesheet" href="stilus.css">
 </head>
 <body>
-    <h1>Szia Világ!</h1>
-    <p>Ez az én első GitHub Pages oldalam.</p>
+
+    <div class="container">
+        <div class="header">
+            <svg class="tree-icon" ...> ... </svg>
+            <h1>Log Fájl Elemző</h1>
+        </div>
+        <p>Töltsd fel a log fájlt...</p>
+        
+        <label for="fileInput" class="custom-file-button">
+            Log fájl kiválasztása
+        </label>
+        <input type="file" id="fileInput" accept=".log, .txt">
+        
+        <div id="fileName">Nincs fájl kiválasztva</div>
+
+        <div class="result-card" id="resultCard">
+            <p id="resultText">Sikeres ügyzárások száma:</p>
+            <p id="resultCount">0</p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
 </body>
 </html>
