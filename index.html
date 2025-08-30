@@ -45,7 +45,6 @@
             max-width: 600px;
             width: 100%;
             animation: fadeInUp 0.7s ease-out forwards;
-            transition: transform 0.3s ease;
         }
 
         .header {
@@ -57,12 +56,12 @@
         }
 
         .header h1 { margin: 0; color: var(--light-text); font-size: 28px; }
-        .tree-icon { width: 40px; height: 40px; color: var(--main-green); }
         p { color: var(--light-text); opacity: 0.8; line-height: 1.6; margin-bottom: 30px; }
         #fileInput { display: none; }
 
         .button-group {
             display: flex;
+            flex-wrap: wrap; /* Tördelés kisebb képernyőn */
             justify-content: center;
             gap: 15px;
             margin-top: 10px;
@@ -92,7 +91,6 @@
             box-shadow: 0 6px 15px rgba(60, 184, 130, 0.3);
         }
 
-        /* ÚJ STÍLUS a "Szintek" gombnak */
         .link-button {
             background-color: transparent;
             color: var(--main-green);
@@ -106,7 +104,7 @@
         }
         
         #fileList { list-style: none; padding: 0; margin: 20px 0 0 0; text-align: left; max-height: 200px; overflow-y: auto; }
-        #fileList li { background-color: rgba(0, 0, 0, 0.2); padding: 10px 15px; border-radius: 6px; margin-bottom: 8px; font-size: 14px; color: var(--light-text); opacity: 0.8; }
+        #fileList li { background-color: rgba(0, 0, 0, 0.2); padding: 10px 15px; border-radius: 6px; margin-bottom: 8px; font-size: 14px; }
 
         .result-card { background-color: var(--main-green); color: var(--dark-text); padding: 20px; margin-top: 30px; border-radius: var(--border-radius); display: none; animation: fadeInUp 0.5s ease forwards; }
         .result-card #resultText { font-size: 18px; font-weight: 500; margin: 0; }
@@ -117,7 +115,6 @@
 
     <div class="container">
         <div class="header">
-            <svg class="tree-icon" ...> ... </svg>
             <h1>Log Fájl Elemző</h1>
         </div>
         
@@ -125,7 +122,8 @@
         
         <div class="button-group">
             <label for="fileInput" class="custom-file-button">Fájl(ok) kiválasztása</label>
-            <a href="levels.html" class="link-button">Szintek megtekintése</a>
+            <a href="levels.html" class="link-button">Szintek</a>
+            <a href="trailers.html" class="link-button">Utánfutók</a>
         </div>
         <input type="file" id="fileInput" accept=".log, .txt" multiple>
         
