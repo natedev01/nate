@@ -10,6 +10,7 @@
             --main-green: #3cb882;
             --dark-bg: #2d3436;
             --medium-bg: #4a5255;
+            --light-bg: #636e72;
             --light-text: #dfe6e9;
             --dark-text: #2d3436;
             --border-radius: 12px;
@@ -28,29 +29,58 @@
             color: var(--light-text);
             margin: 0;
             padding: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start; /* Hosszú tartalom miatt fent kezdődjön */
-            min-height: 100vh;
             box-sizing: border-box;
         }
 
         .container {
             background-color: var(--medium-bg);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 40px;
+            padding: 30px;
             border-radius: var(--border-radius);
             box-shadow: var(--box-shadow);
-            text-align: center;
-            max-width: 800px; /* Szélesebb konténer a táblázatnak */
+            max-width: 900px;
             width: 100%;
+            margin: 20px auto;
             animation: fadeInUp 0.7s ease-out forwards;
-            margin-bottom: 40px; /* Térköz alul */
         }
-        
-        .header h1 { margin: 0; color: var(--light-text); font-size: 28px; }
-        
-        .link-button {
+
+        h1, h2 {
+            color: var(--light-text);
+            text-align: center;
+            margin-top: 0;
+        }
+
+        /* --- Műszerfal szekció --- */
+        .dashboard {
+            background-color: rgba(0, 0, 0, 0.2);
+            padding: 25px;
+            border-radius: var(--border-radius);
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            align-items: center;
+        }
+
+        #minutesInput {
+            flex-grow: 1;
+            padding: 12px;
+            font-size: 16px;
+            border-radius: 8px;
+            border: 2px solid var(--light-bg);
+            background-color: var(--dark-bg);
+            color: var(--light-text);
+            transition: border-color 0.3s;
+        }
+        #minutesInput:focus {
+            outline: none;
+            border-color: var(--main-green);
+        }
+
+        #calculateBtn {
             padding: 12px 25px;
             border-radius: 8px;
             font-size: 16px;
@@ -58,164 +88,292 @@
             cursor: pointer;
             transition: all 0.3s ease;
             text-decoration: none;
-            display: inline-block;
-            background-color: transparent;
-            color: var(--main-green);
-            border: 2px solid var(--main-green);
-            margin-top: 20px;
-        }
-
-        .link-button:hover {
             background-color: var(--main-green);
             color: var(--dark-text);
-            transform: translateY(-3px);
+            border: none;
         }
-        
-        /* ÚJ: Táblázat stílusa */
-        .levels-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 30px;
-            text-align: left;
+        #calculateBtn:hover {
+            background-color: #45cea2;
+            transform: scale(1.05);
         }
 
-        .levels-table th, .levels-table td {
-            padding: 12px 15px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .levels-table th {
-            background-color: rgba(0, 0, 0, 0.2);
-            color: var(--main-green);
-            font-weight: bold;
-        }
-        
-        .levels-table td:last-child {
+        .status-display {
             text-align: center;
-            font-weight: bold;
-            font-size: 1.1em;
         }
+
+        #currentLevelInfo {
+            font-size: 1.2em;
+            margin-bottom: 15px;
+        }
+
+        #currentLevelNumber {
+            font-size: 3em;
+            font-weight: bold;
+            color: var(--main-green);
+        }
+
+        .progress-bar-container {
+            background-color: var(--dark-bg);
+            border-radius: 10px;
+            height: 20px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        #progressBar {
+            background-color: var(--main-green);
+            height: 100%;
+            width: 0%; /* Ezt a JS fogja állítani */
+            border-radius: 10px;
+            transition: width 0.5s ease-out;
+        }
+
+        #progressText {
+            margin-top: 8px;
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+        
+        /* --- Szintek rács nézet --- */
+        .levels-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .level-card {
+            background-color: var(--light-bg);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .level-card .level-number {
+            font-size: 1.5em;
+            font-weight: bold;
+            display: block;
+        }
+        
+        .level-card .level-minutes {
+            font-size: 0.8em;
+            opacity: 0.7;
+            display: block;
+        }
+        
+        /* Kiemelt stílusok */
+        .level-card.active {
+            background-color: var(--main-green);
+            color: var(--dark-text);
+            transform: scale(1.1);
+        }
+        .level-card.active .level-minutes {
+            opacity: 0.8;
+        }
+
+        .level-card.next {
+            border: 2px solid var(--main-green);
+        }
+        
+        /* Vissza gomb */
+        .link-button {
+            display: inline-block;
+            margin-top: 30px;
+            text-decoration: none;
+            color: var(--light-text);
+            opacity: 0.8;
+            transition: opacity 0.3s;
+        }
+        .link-button:hover {
+            opacity: 1;
+            color: var(--main-green);
+        }
+
     </style>
 </head>
 <body>
 
     <div class="container">
-        <div class="header">
-            <h1>Szintek (Időtartam alapján)</h1>
+        <div class="dashboard">
+            <h2>Haladásom</h2>
+            <div class="input-group">
+                <input type="number" id="minutesInput" placeholder="Játszott percek megadása...">
+                <button id="calculateBtn">Mentés & Számolás</button>
+            </div>
+            <div class="status-display">
+                <p id="currentLevelInfo">Jelenlegi szinted: <span id="currentLevelNumber">?</span></p>
+                <div class="progress-bar-container">
+                    <div id="progressBar"></div>
+                </div>
+                <p id="progressText">Add meg a perceidet a haladásod megtekintéséhez.</p>
+            </div>
         </div>
 
-        <table class="levels-table">
-            <thead>
-                <tr>
-                    <th>Időtartam (Óra / Perc)</th>
-                    <th>Szint</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr><td>0 (0p) - 5 (300p) óra</td><td>1</td></tr>
-                <tr><td>5 (300p) - 10 (600p) óra</td><td>2</td></tr>
-                <tr><td>10 (600p) - 15 (900p) óra</td><td>3</td></tr>
-                <tr><td>15 (900p) - 20 (1200p) óra</td><td>4</td></tr>
-                <tr><td>20 (1200p) - 30 (1800p) óra</td><td>5</td></tr>
-                <tr><td>30 (1800p) - 40 (2400p) óra</td><td>6</td></tr>
-                <tr><td>40 (2400p) - 50 (3000p) óra</td><td>7</td></tr>
-                <tr><td>50 (3000p) - 60 (3600p) óra</td><td>8</td></tr>
-                <tr><td>60 (3600p) - 70 (4200p) óra</td><td>9</td></tr>
-                <tr><td>70 (4200p) - 90 (5400p) óra</td><td>10</td></tr>
-                <tr><td>90 (5400p) - 110 (6600p) óra</td><td>11</td></tr>
-                <tr><td>110 (6600p) - 120 (7200p) óra</td><td>12</td></tr>
-                <tr><td>120 (7200p) - 140 (8400p) óra</td><td>13</td></tr>
-                <tr><td>140 (8400p) - 160 (9600p) óra</td><td>14</td></tr>
-                <tr><td>160 (9600p) - 190 (11400p) óra</td><td>15</td></tr>
-                <tr><td>190 (11400p) - 220 (13200p) óra</td><td>16</td></tr>
-                <tr><td>220 (13200p) - 250 (15000p) óra</td><td>17</td></tr>
-                <tr><td>250 (15000p) - 280 (16800p) óra</td><td>18</td></tr>
-                <tr><td>280 (16800p) - 310 (18600p) óra</td><td>19</td></tr>
-                <tr><td>310 (18600p) - 350 (21000p) óra</td><td>20</td></tr>
-                <tr><td>350 (21000p) - 390 (23400p) óra</td><td>21</td></tr>
-                <tr><td>390 (23400p) - 430 (25800p) óra</td><td>22</td></tr>
-                <tr><td>430 (25800p) - 470 (28200p) óra</td><td>23</td></tr>
-                <tr><td>470 (28200p) - 500 (30000p) óra</td><td>24</td></tr>
-                <tr><td>500 (30000p) - 550 (33000p) óra</td><td>25</td></tr>
-                <tr><td>550 (33000p) - 600 (36000p) óra</td><td>26</td></tr>
-                <tr><td>600 (36000p) - 650 (39000p) óra</td><td>27</td></tr>
-                <tr><td>650 (39000p) - 700 (42000p) óra</td><td>28</td></tr>
-                <tr><td>700 (42000p) - 750 (45000p) óra</td><td>29</td></tr>
-                <tr><td>750 (45000p) - 800 (48000p) óra</td><td>30</td></tr>
-                <tr><td>800 (48000p) - 850 (51000p) óra</td><td>31</td></tr>
-                <tr><td>850 (51000p) - 900 (54000p) óra</td><td>32</td></tr>
-                <tr><td>900 (54000p) - 950 (57000p) óra</td><td>33</td></tr>
-                <tr><td>950 (57000p) - 1000 (60000p) óra</td><td>34</td></tr>
-                <tr><td>1000 (60000p) - 1050 (63000p) óra</td><td>35</td></tr>
-                <tr><td>1050 (63000p) - 1100 (66000p) óra</td><td>36</td></tr>
-                <tr><td>1100 (66000p) - 1150 (69000p) óra</td><td>37</td></tr>
-                <tr><td>1150 (69000p) - 1200 (72000p) óra</td><td>38</td></tr>
-                <tr><td>1200 (72000p) - 1250 (75000p) óra</td><td>39</td></tr>
-                <tr><td>1250 (75000p) - 1300 (78000p) óra</td><td>40</td></tr>
-                <tr><td>1300 (78000p) - 1350 (81000p) óra</td><td>41</td></tr>
-                <tr><td>1350 (81000p) - 1400 (84000p) óra</td><td>42</td></tr>
-                <tr><td>1400 (84000p) - 1450 (87000p) óra</td><td>43</td></tr>
-                <tr><td>1450 (87000p) - 1500 (90000p) óra</td><td>44</td></tr>
-                <tr><td>1500 (90000p) - 1600 (96000p) óra</td><td>45</td></tr>
-                <tr><td>1600 (96000p) - 1700 (102000p) óra</td><td>46</td></tr>
-                <tr><td>1700 (102000p) - 1800 (108000p) óra</td><td>47</td></tr>
-                <tr><td>1800 (108000p) - 1900 (114000p) óra</td><td>48</td></tr>
-                <tr><td>1900 (114000p) - 2000 (120000p) óra</td><td>49</td></tr>
-                <tr><td>2000 (120000p) - 2100 (126000p) óra</td><td>50</td></tr>
-                <tr><td>2100 (126000p) - 2200 (132000p) óra</td><td>51</td></tr>
-                <tr><td>2200 (132000p) - 2300 (138000p) óra</td><td>52</td></tr>
-                <tr><td>2300 (138000p) - 2400 (144000p) óra</td><td>53</td></tr>
-                <tr><td>2400 (144000p) - 2500 (150000p) óra</td><td>54</td></tr>
-                <tr><td>2500 (150000p) - 2600 (156000p) óra</td><td>55</td></tr>
-                <tr><td>2600 (156000p) - 2700 (162000p) óra</td><td>56</td></tr>
-                <tr><td>2700 (162000p) - 2800 (168000p) óra</td><td>57</td></tr>
-                <tr><td>2800 (168000p) - 2900 (174000p) óra</td><td>58</td></tr>
-                <tr><td>2900 (174000p) - 3000 (180000p) óra</td><td>59</td></tr>
-                <tr><td>3000 (180000p) - 3100 (186000p) óra</td><td>60</td></tr>
-                <tr><td>3100 (186000p) - 3200 (192000p) óra</td><td>61</td></tr>
-                <tr><td>3200 (192000p) - 3300 (198000p) óra</td><td>62</td></tr>
-                <tr><td>3300 (198000p) - 3400 (204000p) óra</td><td>63</td></tr>
-                <tr><td>3400 (204000p) - 3500 (210000p) óra</td><td>64</td></tr>
-                <tr><td>3500 (210000p) - 3600 (216000p) óra</td><td>65</td></tr>
-                <tr><td>3600 (216000p) - 3700 (222000p) óra</td><td>66</td></tr>
-                <tr><td>3700 (222000p) - 3800 (228000p) óra</td><td>67</td></tr>
-                <tr><td>3800 (228000p) - 3900 (234000p) óra</td><td>68</td></tr>
-                <tr><td>3900 (234000p) - 4000 (240000p) óra</td><td>69</td></tr>
-                <tr><td>4000 (240000p) - 4200 (252000p) óra</td><td>70</td></tr>
-                <tr><td>4200 (252000p) - 4400 (264000p) óra</td><td>71</td></tr>
-                <tr><td>4400 (264000p) - 4600 (276000p) óra</td><td>72</td></tr>
-                <tr><td>4600 (276000p) - 4800 (288000p) óra</td><td>73</td></tr>
-                <tr><td>4800 (288000p) - 5000 (300000p) óra</td><td>74</td></tr>
-                <tr><td>5000 (300000p) - 5500 (330000p) óra</td><td>75</td></tr>
-                <tr><td>5500 (330000p) - 6000 (360000p) óra</td><td>76</td></tr>
-                <tr><td>6000 (360000p) - 6500 (390000p) óra</td><td>77</td></tr>
-                <tr><td>6500 (390000p) - 7000 (420000p) óra</td><td>78</td></tr>
-                <tr><td>7000 (420000p) - 7500 (450000p) óra</td><td>79</td></tr>
-                <tr><td>7500 (450000p) - 8500 (510000p) óra</td><td>80</td></tr>
-                <tr><td>8500 (510000p) - 9500 (570000p) óra</td><td>81</td></tr>
-                <tr><td>9500 (570000p) - 10500 (630000p) óra</td><td>82</td></tr>
-                <tr><td>10500 (630000p) - 11500 (690000p) óra</td><td>83</td></tr>
-                <tr><td>11500 (690000p) - 12500 (750000p) óra</td><td>84</td></tr>
-                <tr><td>12500 (750000p) - 13500 (810000p) óra</td><td>85</td></tr>
-                <tr><td>13500 (810000p) - 14500 (870000p) óra</td><td>86</td></tr>
-                <tr><td>14500 (870000p) - 15500 (930000p) óra</td><td>87</td></tr>
-                <tr><td>15500 (930000p) - 16500 (990000p) óra</td><td>88</td></tr>
-                <tr><td>16500 (990000p) - 17500 (1050000p) óra</td><td>89</td></tr>
-                <tr><td>17500 (1050000p) - 18500 (1110000p) óra</td><td>90</td></tr>
-                <tr><td>18500 (1110000p) - 19500 (1170000p) óra</td><td>91</td></tr>
-                <tr><td>19500 (1170000p) - 20500 (1230000p) óra</td><td>92</td></tr>
-                <tr><td>20500 (1230000p) - 21500 (1290000p) óra</td><td>93</td></tr>
-                <tr><td>21500 (1290000p) - 22500 (1350000p) óra</td><td>94</td></tr>
-                <tr><td>22500 (1350000p) - 23500 (1410000p) óra</td><td>95</td></tr>
-                <tr><td>23500 (1410000p) - 24500 (1470000p) óra</td><td>96</td></tr>
-                <tr><td>24500 (1470000p) - 25500 (1530000p) óra</td><td>97</td></tr>
-                <tr><td>25500 (1530000p) - 30000 (1800000p) óra</td><td>98</td></tr>
-                <tr><td>30000 (1800000p) óra és nagyobb</td><td>99</td></tr>
-            </tbody>
-        </table>
+        <h2>Összes Szint</h2>
+        <div class="levels-grid" id="levelsGrid">
+            </div>
         
-        <a href="index.html" class="link-button">Vissza a főoldalra</a>
+        <a href="index.html" class="link-button">← Vissza a főoldalra</a>
     </div>
 
+    <script>
+        const levelsData = [
+            { level: 1, min: 0, max: 300 }, { level: 2, min: 300, max: 600 },
+            { level: 3, min: 600, max: 900 }, { level: 4, min: 900, max: 1200 },
+            { level: 5, min: 1200, max: 1800 }, { level: 6, min: 1800, max: 2400 },
+            { level: 7, min: 2400, max: 3000 }, { level: 8, min: 3000, max: 3600 },
+            { level: 9, min: 3600, max: 4200 }, { level: 10, min: 4200, max: 5400 },
+            { level: 11, min: 5400, max: 6600 }, { level: 12, min: 6600, max: 7200 },
+            { level: 13, min: 7200, max: 8400 }, { level: 14, min: 8400, max: 9600 },
+            { level: 15, min: 9600, max: 11400 }, { level: 16, min: 11400, max: 13200 },
+            { level: 17, min: 13200, max: 15000 }, { level: 18, min: 15000, max: 16800 },
+            { level: 19, min: 16800, max: 18600 }, { level: 20, min: 18600, max: 21000 },
+            { level: 21, min: 21000, max: 23400 }, { level: 22, min: 23400, max: 25800 },
+            { level: 23, min: 25800, max: 28200 }, { level: 24, min: 28200, max: 30000 },
+            { level: 25, min: 30000, max: 33000 }, { level: 26, min: 33000, max: 36000 },
+            { level: 27, min: 36000, max: 39000 }, { level: 28, min: 39000, max: 42000 },
+            { level: 29, min: 42000, max: 45000 }, { level: 30, min: 45000, max: 48000 },
+            { level: 31, min: 48000, max: 51000 }, { level: 32, min: 51000, max: 54000 },
+            { level: 33, min: 54000, max: 57000 }, { level: 34, min: 57000, max: 60000 },
+            { level: 35, min: 60000, max: 63000 }, { level: 36, min: 63000, max: 66000 },
+            { level: 37, min: 66000, max: 69000 }, { level: 38, min: 69000, max: 72000 },
+            { level: 39, min: 72000, max: 75000 }, { level: 40, min: 75000, max: 78000 },
+            { level: 41, min: 78000, max: 81000 }, { level: 42, min: 81000, max: 84000 },
+            { level: 43, min: 84000, max: 87000 }, { level: 44, min: 87000, max: 90000 },
+            { level: 45, min: 90000, max: 96000 }, { level: 46, min: 96000, max: 102000 },
+            { level: 47, min: 102000, max: 108000 }, { level: 48, min: 108000, max: 114000 },
+            { level: 49, min: 114000, max: 120000 }, { level: 50, min: 120000, max: 126000 },
+            { level: 51, min: 126000, max: 132000 }, { level: 52, min: 132000, max: 138000 },
+            { level: 53, min: 138000, max: 144000 }, { level: 54, min: 144000, max: 150000 },
+            { level: 55, min: 150000, max: 156000 }, { level: 56, min: 156000, max: 162000 },
+            { level: 57, min: 162000, max: 168000 }, { level: 58, min: 168000, max: 174000 },
+            { level: 59, min: 174000, max: 180000 }, { level: 60, min: 180000, max: 186000 },
+            { level: 61, min: 186000, max: 192000 }, { level: 62, min: 192000, max: 198000 },
+            { level: 63, min: 198000, max: 204000 }, { level: 64, min: 204000, max: 210000 },
+            { level: 65, min: 210000, max: 216000 }, { level: 66, min: 216000, max: 222000 },
+            { level: 67, min: 222000, max: 228000 }, { level: 68, min: 228000, max: 234000 },
+            { level: 69, min: 234000, max: 240000 }, { level: 70, min: 240000, max: 252000 },
+            { level: 71, min: 252000, max: 264000 }, { level: 72, min: 264000, max: 276000 },
+            { level: 73, min: 276000, max: 288000 }, { level: 74, min: 288000, max: 300000 },
+            { level: 75, min: 300000, max: 330000 }, { level: 76, min: 330000, max: 360000 },
+            { level: 77, min: 360000, max: 390000 }, { level: 78, min: 390000, max: 420000 },
+            { level: 79, min: 420000, max: 450000 }, { level: 80, min: 450000, max: 510000 },
+            { level: 81, min: 510000, max: 570000 }, { level: 82, min: 570000, max: 630000 },
+            { level: 83, min: 630000, max: 690000 }, { level: 84, min: 690000, max: 750000 },
+            { level: 85, min: 750000, max: 810000 }, { level: 86, min: 810000, max: 870000 },
+            { level: 87, min: 870000, max: 930000 }, { level: 88, min: 930000, max: 990000 },
+            { level: 89, min: 990000, max: 1050000 }, { level: 90, min: 1050000, max: 1110000 },
+            { level: 91, min: 1110000, max: 1170000 }, { level: 92, min: 1170000, max: 1230000 },
+            { level: 93, min: 1230000, max: 1290000 }, { level: 94, min: 1290000, max: 1350000 },
+            { level: 95, min: 1350000, max: 1410000 }, { level: 96, min: 1410000, max: 1470000 },
+            { level: 97, min: 1470000, max: 1530000 }, { level: 98, min: 1530000, max: 1800000 },
+            { level: 99, min: 1800000, max: Infinity }
+        ];
+
+        // DOM elemek elérése
+        const minutesInput = document.getElementById('minutesInput');
+        const calculateBtn = document.getElementById('calculateBtn');
+        const currentLevelNumber = document.getElementById('currentLevelNumber');
+        const progressBar = document.getElementById('progressBar');
+        const progressText = document.getElementById('progressText');
+        const levelsGrid = document.getElementById('levelsGrid');
+
+        // Funkció a haladás frissítésére
+        function updateProgress(minutes) {
+            minutes = parseInt(minutes, 10);
+            if (isNaN(minutes) || minutes < 0) {
+                progressText.textContent = "Kérlek, adj meg egy érvényes számot.";
+                return;
+            }
+
+            const currentLevelData = levelsData.find(l => minutes >= l.min && minutes < l.max);
+            if (!currentLevelData) {
+                currentLevelNumber.textContent = "N/A";
+                progressText.textContent = "Hiba a szint meghatározásakor.";
+                return;
+            }
+
+            currentLevelNumber.textContent = currentLevelData.level;
+            
+            // Haladás számítása a következő szinthez
+            const nextLevelData = levelsData.find(l => l.level === currentLevelData.level + 1);
+            if (nextLevelData) {
+                const minutesIntoLevel = minutes - currentLevelData.min;
+                const levelDuration = nextLevelData.min - currentLevelData.min;
+                const percentage = (minutesIntoLevel / levelDuration) * 100;
+                const minutesNeeded = nextLevelData.min - minutes;
+
+                progressBar.style.width = `${percentage}%`;
+                progressText.textContent = `Még ${minutesNeeded.toLocaleString('hu-HU')} perc kell a(z) ${nextLevelData.level}. szinthez. (${minutesIntoLevel.toLocaleString('hu-HU')} / ${levelDuration.toLocaleString('hu-HU')})`;
+            } else {
+                // Max szint elérve
+                progressBar.style.width = '100%';
+                progressText.textContent = "Gratulálunk, elérted a maximális szintet!";
+            }
+            
+            // Kártyák kiemelése
+            highlightCards(currentLevelData.level);
+        }
+
+        // Funkció a szintek kártyáinak generálására
+        function generateLevelCards() {
+            levelsGrid.innerHTML = ''; // Rács kiürítése
+            for (const level of levelsData) {
+                const card = document.createElement('div');
+                card.className = 'level-card';
+                card.dataset.level = level.level;
+                
+                const levelNum = document.createElement('span');
+                levelNum.className = 'level-number';
+                levelNum.textContent = level.level;
+                
+                const levelMins = document.createElement('span');
+                levelMins.className = 'level-minutes';
+                levelMins.textContent = `${(level.min / 60).toFixed(0)}h - ${(level.max / 60).toFixed(0)}h`;
+                
+                if (level.max === Infinity) {
+                    levelMins.textContent = `${(level.min / 60).toFixed(0)}h+`;
+                }
+
+                card.appendChild(levelNum);
+                card.appendChild(levelMins);
+                levelsGrid.appendChild(card);
+            }
+        }
+        
+        // Funkció az aktív és következő kártya kiemelésére
+        function highlightCards(currentLevel) {
+            const allCards = document.querySelectorAll('.level-card');
+            allCards.forEach(card => {
+                card.classList.remove('active', 'next');
+                const cardLevel = parseInt(card.dataset.level, 10);
+                if (cardLevel === currentLevel) {
+                    card.classList.add('active');
+                }
+                if (cardLevel === currentLevel + 1) {
+                    card.classList.add('next');
+                }
+            });
+        }
+
+        // Eseménykezelő a gombhoz
+        calculateBtn.addEventListener('click', () => {
+            const minutes = minutesInput.value;
+            localStorage.setItem('playedMinutes', minutes); // Mentés
+            updateProgress(minutes);
+        });
+
+        // Betöltéskor lefutó kód
+        document.addEventListener('DOMContentLoaded', () => {
+            generateLevelCards();
+            const savedMinutes = localStorage.getItem('playedMinutes');
+            if (savedMinutes) {
+                minutesInput.value = savedMinutes;
+                updateProgress(savedMinutes);
+            }
+        });
+
+    </script>
 </body>
 </html>
