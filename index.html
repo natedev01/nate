@@ -17,14 +17,8 @@
         }
 
         @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         body {
@@ -54,10 +48,6 @@
             transition: transform 0.3s ease;
         }
 
-        .container:hover {
-            transform: translateY(-8px);
-        }
-
         .header {
             display: flex;
             align-items: center;
@@ -66,40 +56,34 @@
             margin-bottom: 30px;
         }
 
-        .header h1 {
-            margin: 0;
-            color: var(--light-text);
-            font-size: 28px;
-        }
+        .header h1 { margin: 0; color: var(--light-text); font-size: 28px; }
+        .tree-icon { width: 40px; height: 40px; color: var(--main-green); }
+        p { color: var(--light-text); opacity: 0.8; line-height: 1.6; margin-bottom: 30px; }
+        #fileInput { display: none; }
 
-        .tree-icon {
-            width: 40px;
-            height: 40px;
-            color: var(--main-green);
+        .button-group {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 10px;
         }
-
-        p {
-            color: var(--light-text);
-            opacity: 0.8;
-            line-height: 1.6;
-            margin-bottom: 30px;
-        }
-
-        #fileInput {
-            display: none;
+        
+        .custom-file-button, .link-button {
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
         }
 
         .custom-file-button {
             background-color: var(--main-green);
             color: var(--dark-text);
-            padding: 12px 25px;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: bold;
             border: none;
-            cursor: pointer;
             box-shadow: 0 4px 10px rgba(60, 184, 130, 0.2);
-            transition: all 0.3s ease;
         }
         
         .custom-file-button:hover {
@@ -107,65 +91,42 @@
             transform: translateY(-3px);
             box-shadow: 0 6px 15px rgba(60, 184, 130, 0.3);
         }
-        
-        /* ÚJ: A fájl lista stílusa */
-        #fileList {
-            list-style: none;
-            padding: 0;
-            margin: 20px 0 0 0;
-            text-align: left;
-            max-height: 200px;
-            overflow-y: auto;
-        }
-        
-        #fileList li {
-            background-color: rgba(0, 0, 0, 0.2);
-            padding: 10px 15px;
-            border-radius: 6px;
-            margin-bottom: 8px;
-            font-size: 14px;
-            color: var(--light-text);
-            opacity: 0.8;
+
+        /* ÚJ STÍLUS a "Szintek" gombnak */
+        .link-button {
+            background-color: transparent;
+            color: var(--main-green);
+            border: 2px solid var(--main-green);
         }
 
-        .result-card {
+        .link-button:hover {
             background-color: var(--main-green);
             color: var(--dark-text);
-            padding: 20px;
-            margin-top: 30px;
-            border-radius: var(--border-radius);
-            display: none;
-            animation: fadeInUp 0.5s ease forwards;
+            transform: translateY(-3px);
         }
+        
+        #fileList { list-style: none; padding: 0; margin: 20px 0 0 0; text-align: left; max-height: 200px; overflow-y: auto; }
+        #fileList li { background-color: rgba(0, 0, 0, 0.2); padding: 10px 15px; border-radius: 6px; margin-bottom: 8px; font-size: 14px; color: var(--light-text); opacity: 0.8; }
 
-        .result-card #resultText {
-            font-size: 18px;
-            font-weight: 500;
-            margin: 0;
-        }
-
-        .result-card #resultCount {
-            font-size: 48px;
-            font-weight: bold;
-            margin: 10px 0 0 0;
-        }
+        .result-card { background-color: var(--main-green); color: var(--dark-text); padding: 20px; margin-top: 30px; border-radius: var(--border-radius); display: none; animation: fadeInUp 0.5s ease forwards; }
+        .result-card #resultText { font-size: 18px; font-weight: 500; margin: 0; }
+        .result-card #resultCount { font-size: 48px; font-weight: bold; margin: 10px 0 0 0; }
     </style>
 </head>
 <body>
 
     <div class="container">
         <div class="header">
-            <svg class="tree-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M17 14h-3v6h-4v-6H7l5-5 5 5zM7 3h10v2H7z"/>
-            </svg>
+            <svg class="tree-icon" ...> ... </svg>
             <h1>Log Fájl Elemző</h1>
         </div>
         
         <p>Tölts fel egy vagy több log fájlt, és az eszköz megszámolja a sikeres ügyzárásokat.</p>
         
-        <label for="fileInput" class="custom-file-button">
-            Fájl(ok) kiválasztása
-        </label>
+        <div class="button-group">
+            <label for="fileInput" class="custom-file-button">Fájl(ok) kiválasztása</label>
+            <a href="levels.html" class="link-button">Szintek megtekintése</a>
+        </div>
         <input type="file" id="fileInput" accept=".log, .txt" multiple>
         
         <ul id="fileList"></ul>
