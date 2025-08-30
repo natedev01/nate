@@ -157,9 +157,7 @@
             let totalOccurrences = 0;
             let filesProcessed = 0;
 
-            // Végigmegyünk az összes kiválasztott fájlon
             for (const file of files) {
-                // Létrehozunk egy listaelem-et minden fájlnak
                 const listItem = document.createElement('li');
                 listItem.textContent = `Elemzés: ${file.name}...`;
                 fileListDisplay.appendChild(listItem);
