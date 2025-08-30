@@ -54,9 +54,8 @@
         }
         
         .link-button {
-            display: inline-block;
+            display: block; /* Teljes szélességű legyen */
             text-align: center;
-            width: calc(100% - 54px);
             padding: 12px 25px;
             border-radius: 8px;
             font-size: 16px;
@@ -67,7 +66,7 @@
             background-color: transparent;
             color: var(--main-green);
             border: 2px solid var(--main-green);
-            margin-top: 20px;
+            margin-top: 30px;
         }
 
         .link-button:hover {
@@ -76,26 +75,50 @@
             transform: translateY(-3px);
         }
         
+        /* ÚJ: Táblázat konténer a lekerekítéshez */
+        .table-wrapper {
+            border-radius: var(--border-radius);
+            overflow: hidden; /* Ez vágja le a táblázat sarkait */
+            border: 1px solid rgba(0, 0, 0, 0.2);
+        }
+
+        /* ÁTÍRT: Modern táblázat stílusok */
         .trailer-table {
             width: 100%;
             border-collapse: collapse;
         }
 
-        .trailer-table th, .trailer-table td {
-            padding: 12px 15px;
-            border: 1px solid var(--dark-bg);
-        }
-        
         .trailer-table th {
-            background-color: rgba(0, 0, 0, 0.2);
+            background-color: rgba(0, 0, 0, 0.3);
             color: var(--main-green);
             font-weight: bold;
-            font-size: 1.1em;
+            font-size: 1em;
+            padding: 16px 20px;
+            text-align: left;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
         
-        /* Üres cellák magassága */
         .trailer-table td {
-            height: 25px;
+            padding: 16px 20px;
+            /* Finom elválasztó vonal a sorok között */
+            border-bottom: 1px solid var(--dark-bg);
+            transition: background-color 0.3s ease;
+        }
+        
+        /* Zebra-csíkozás a jobb olvashatóságért */
+        .trailer-table tbody tr:nth-child(even) {
+            background-color: rgba(0, 0, 0, 0.15);
+        }
+
+        /* Az utolsó sor aljáról eltüntetjük a vonalat */
+        .trailer-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Interaktív hover effekt */
+        .trailer-table tbody tr:hover {
+            background-color: rgba(60, 184, 130, 0.2); /* Zöldes kiemelés */
         }
     </style>
 </head>
@@ -105,37 +128,39 @@
         <div class="header">
             <h1>Utánfutóra köthető járművek</h1>
         </div>
-
-        <table class="trailer-table">
-            <thead>
-                <tr>
-                    <th>V4 (Régi név)</th>
-                    <th>V4 (Új név)</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
-                <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
-                <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
-                <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
-                <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
-                <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
-                <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
-                <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
-                <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
-                <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
-                <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
-                <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
-                <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
-                <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
-                <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
-                <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
-                <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
-                <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
-                <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
-                <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
-            </tbody>
-        </table>
+        
+        <div class="table-wrapper">
+            <table class="trailer-table">
+                <thead>
+                    <tr>
+                        <th>V4 (Régi név)</th>
+                        <th>V4 (Új név)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>—</td><td>—</td></tr>
+                    <tr><td>—</td><td>—</td></tr>
+                    <tr><td>—</td><td>—</td></tr>
+                    <tr><td>—</td><td>—</td></tr>
+                    <tr><td>—</td><td>—</td></tr>
+                    <tr><td>—</td><td>—</td></tr>
+                    <tr><td>—</td><td>—</td></tr>
+                    <tr><td>—</td><td>—</td></tr>
+                    <tr><td>—</td><td>—</td></tr>
+                    <tr><td>—</td><td>—</td></tr>
+                    <tr><td>—</td><td>—</td></tr>
+                    <tr><td>—</td><td>—</td></tr>
+                    <tr><td>—</td><td>—</td></tr>
+                    <tr><td>—</td><td>—</td></tr>
+                    <tr><td>—</td><td>—</td></tr>
+                    <tr><td>—</td><td>—</td></tr>
+                    <tr><td>—</td><td>—</td></tr>
+                    <tr><td>—</td><td>—</td></tr>
+                    <tr><td>—</td><td>—</td></tr>
+                    <tr><td>—</td><td>—</td></tr>
+                </tbody>
+            </table>
+        </div>
         
         <a href="index.html" class="link-button">Vissza a főoldalra</a>
     </div>
