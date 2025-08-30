@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Szintek - Log Elemző</title>
+    
+    <style>
+        /* A stílusok megegyeznek az index.html stílusaival a konzisztens dizájn érdekében */
+        :root {
+            --main-green: #3cb882;
+            --dark-bg: #2d3436;
+            --medium-bg: #4a5255;
+            --light-text: #dfe6e9;
+            --dark-text: #2d3436;
+            --border-radius: 12px;
+            --box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--dark-bg);
+            background-image: linear-gradient(180deg, #383f41 0%, #2d3436 100%);
+            color: var(--light-text);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* Hosszú tartalom miatt fent kezdődjön */
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        .container {
+            background-color: var(--medium-bg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 40px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            text-align: center;
+            max-width: 800px; /* Szélesebb konténer a táblázatnak */
+            width: 100%;
+            animation: fadeInUp 0.7s ease-out forwards;
+            margin-bottom: 40px; /* Térköz alul */
+        }
+        
+        .header h1 { margin: 0; color: var(--light-text); font-size: 28px; }
+        
+        .link-button {
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            background-color: transparent;
+            color: var(--main-green);
+            border: 2px solid var(--main-green);
+            margin-top: 20px;
+        }
+
+        .link-button:hover {
+            background-color: var(--main-green);
+            color: var(--dark-text);
+            transform: translateY(-3px);
+        }
+        
+        /* ÚJ: Táblázat stílusa */
+        .levels-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 30px;
+            text-align: left;
+        }
+
+        .levels-table th, .levels-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .levels-table th {
+            background-color: rgba(0, 0, 0, 0.2);
+            color: var(--main-green);
+            font-weight: bold;
+        }
+        
+        .levels-table td:last-child {
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header">
+            <h1>Szintek (Időtartam alapján)</h1>
+        </div>
+
+        <table class="levels-table">
+            <thead>
+                <tr>
+                    <th>Időtartam (Óra / Perc)</th>
+                    <th>Szint</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>0 (0p) - 5 (300p) óra</td><td>1</td></tr>
+                <tr><td>5 (300p) - 10 (600p) óra</td><td>2</td></tr>
+                <tr><td>10 (600p) - 15 (900p) óra</td><td>3</td></tr>
+                <tr><td>15 (900p) - 20 (1200p) óra</td><td>4</td></tr>
+                <tr><td>20 (1200p) - 30 (1800p) óra</td><td>5</td></tr>
+                <tr><td>30 (1800p) - 40 (2400p) óra</td><td>6</td></tr>
+                <tr><td>40 (2400p) - 50 (3000p) óra</td><td>7</td></tr>
+                <tr><td>50 (3000p) - 60 (3600p) óra</td><td>8</td></tr>
+                <tr><td>60 (3600p) - 70 (4200p) óra</td><td>9</td></tr>
+                <tr><td>70 (4200p) - 90 (5400p) óra</td><td>10</td></tr>
+                <tr><td>90 (5400p) - 110 (6600p) óra</td><td>11</td></tr>
+                <tr><td>110 (6600p) - 120 (7200p) óra</td><td>12</td></tr>
+                <tr><td>120 (7200p) - 140 (8400p) óra</td><td>13</td></tr>
+                <tr><td>140 (8400p) - 160 (9600p) óra</td><td>14</td></tr>
+                <tr><td>160 (9600p) - 190 (11400p) óra</td><td>15</td></tr>
+                <tr><td>190 (11400p) - 220 (13200p) óra</td><td>16</td></tr>
+                <tr><td>220 (13200p) - 250 (15000p) óra</td><td>17</td></tr>
+                <tr><td>250 (15000p) - 280 (16800p) óra</td><td>18</td></tr>
+                <tr><td>280 (16800p) - 310 (18600p) óra</td><td>19</td></tr>
+                <tr><td>310 (18600p) - 350 (21000p) óra</td><td>20</td></tr>
+                <tr><td>350 (21000p) - 390 (23400p) óra</td><td>21</td></tr>
+                <tr><td>390 (23400p) - 430 (25800p) óra</td><td>22</td></tr>
+                <tr><td>430 (25800p) - 470 (28200p) óra</td><td>23</td></tr>
+                <tr><td>470 (28200p) - 500 (30000p) óra</td><td>24</td></tr>
+                <tr><td>500 (30000p) - 550 (33000p) óra</td><td>25</td></tr>
+                <tr><td>550 (33000p) - 600 (36000p) óra</td><td>26</td></tr>
+                <tr><td>600 (36000p) - 650 (39000p) óra</td><td>27</td></tr>
+                <tr><td>650 (39000p) - 700 (42000p) óra</td><td>28</td></tr>
+                <tr><td>700 (42000p) - 750 (45000p) óra</td><td>29</td></tr>
+                <tr><td>750 (45000p) - 800 (48000p) óra</td><td>30</td></tr>
+                <tr><td>800 (48000p) - 850 (51000p) óra</td><td>31</td></tr>
+                <tr><td>850 (51000p) - 900 (54000p) óra</td><td>32</td></tr>
+                <tr><td>900 (54000p) - 950 (57000p) óra</td><td>33</td></tr>
+                <tr><td>950 (57000p) - 1000 (60000p) óra</td><td>34</td></tr>
+                <tr><td>1000 (60000p) - 1050 (63000p) óra</td><td>35</td></tr>
+                <tr><td>1050 (63000p) - 1100 (66000p) óra</td><td>36</td></tr>
+                <tr><td>1100 (66000p) - 1150 (69000p) óra</td><td>37</td></tr>
+                <tr><td>1150 (69000p) - 1200 (72000p) óra</td><td>38</td></tr>
+                <tr><td>1200 (72000p) - 1250 (75000p) óra</td><td>39</td></tr>
+                <tr><td>1250 (75000p) - 1300 (78000p) óra</td><td>40</td></tr>
+                <tr><td>1300 (78000p) - 1350 (81000p) óra</td><td>41</td></tr>
+                <tr><td>1350 (81000p) - 1400 (84000p) óra</td><td>42</td></tr>
+                <tr><td>1400 (84000p) - 1450 (87000p) óra</td><td>43</td></tr>
+                <tr><td>1450 (87000p) - 1500 (90000p) óra</td><td>44</td></tr>
+                <tr><td>1500 (90000p) - 1600 (96000p) óra</td><td>45</td></tr>
+                <tr><td>1600 (96000p) - 1700 (102000p) óra</td><td>46</td></tr>
+                <tr><td>1700 (102000p) - 1800 (108000p) óra</td><td>47</td></tr>
+                <tr><td>1800 (108000p) - 1900 (114000p) óra</td><td>48</td></tr>
+                <tr><td>1900 (114000p) - 2000 (120000p) óra</td><td>49</td></tr>
+                <tr><td>2000 (120000p) - 2100 (126000p) óra</td><td>50</td></tr>
+                <tr><td>2100 (126000p) - 2200 (132000p) óra</td><td>51</td></tr>
+                <tr><td>2200 (132000p) - 2300 (138000p) óra</td><td>52</td></tr>
+                <tr><td>2300 (138000p) - 2400 (144000p) óra</td><td>53</td></tr>
+                <tr><td>2400 (144000p) - 2500 (150000p) óra</td><td>54</td></tr>
+                <tr><td>2500 (150000p) - 2600 (156000p) óra</td><td>55</td></tr>
+                <tr><td>2600 (156000p) - 2700 (162000p) óra</td><td>56</td></tr>
+                <tr><td>2700 (162000p) - 2800 (168000p) óra</td><td>57</td></tr>
+                <tr><td>2800 (168000p) - 2900 (174000p) óra</td><td>58</td></tr>
+                <tr><td>2900 (174000p) - 3000 (180000p) óra</td><td>59</td></tr>
+                <tr><td>3000 (180000p) - 3100 (186000p) óra</td><td>60</td></tr>
+                <tr><td>3100 (186000p) - 3200 (192000p) óra</td><td>61</td></tr>
+                <tr><td>3200 (192000p) - 3300 (198000p) óra</td><td>62</td></tr>
+                <tr><td>3300 (198000p) - 3400 (204000p) óra</td><td>63</td></tr>
+                <tr><td>3400 (204000p) - 3500 (210000p) óra</td><td>64</td></tr>
+                <tr><td>3500 (210000p) - 3600 (216000p) óra</td><td>65</td></tr>
+                <tr><td>3600 (216000p) - 3700 (222000p) óra</td><td>66</td></tr>
+                <tr><td>3700 (222000p) - 3800 (228000p) óra</td><td>67</td></tr>
+                <tr><td>3800 (228000p) - 3900 (234000p) óra</td><td>68</td></tr>
+                <tr><td>3900 (234000p) - 4000 (240000p) óra</td><td>69</td></tr>
+                <tr><td>4000 (240000p) - 4200 (252000p) óra</td><td>70</td></tr>
+                <tr><td>4200 (252000p) - 4400 (264000p) óra</td><td>71</td></tr>
+                <tr><td>4400 (264000p) - 4600 (276000p) óra</td><td>72</td></tr>
+                <tr><td>4600 (276000p) - 4800 (288000p) óra</td><td>73</td></tr>
+                <tr><td>4800 (288000p) - 5000 (300000p) óra</td><td>74</td></tr>
+                <tr><td>5000 (300000p) - 5500 (330000p) óra</td><td>75</td></tr>
+                <tr><td>5500 (330000p) - 6000 (360000p) óra</td><td>76</td></tr>
+                <tr><td>6000 (360000p) - 6500 (390000p) óra</td><td>77</td></tr>
+                <tr><td>6500 (390000p) - 7000 (420000p) óra</td><td>78</td></tr>
+                <tr><td>7000 (420000p) - 7500 (450000p) óra</td><td>79</td></tr>
+                <tr><td>7500 (450000p) - 8500 (510000p) óra</td><td>80</td></tr>
+                <tr><td>8500 (510000p) - 9500 (570000p) óra</td><td>81</td></tr>
+                <tr><td>9500 (570000p) - 10500 (630000p) óra</td><td>82</td></tr>
+                <tr><td>10500 (630000p) - 11500 (690000p) óra</td><td>83</td></tr>
+                <tr><td>11500 (690000p) - 12500 (750000p) óra</td><td>84</td></tr>
+                <tr><td>12500 (750000p) - 13500 (810000p) óra</td><td>85</td></tr>
+                <tr><td>13500 (810000p) - 14500 (870000p) óra</td><td>86</td></tr>
+                <tr><td>14500 (870000p) - 15500 (930000p) óra</td><td>87</td></tr>
+                <tr><td>15500 (930000p) - 16500 (990000p) óra</td><td>88</td></tr>
+                <tr><td>16500 (990000p) - 17500 (1050000p) óra</td><td>89</td></tr>
+                <tr><td>17500 (1050000p) - 18500 (1110000p) óra</td><td>90</td></tr>
+                <tr><td>18500 (1110000p) - 19500 (1170000p) óra</td><td>91</td></tr>
+                <tr><td>19500 (1170000p) - 20500 (1230000p) óra</td><td>92</td></tr>
+                <tr><td>20500 (1230000p) - 21500 (1290000p) óra</td><td>93</td></tr>
+                <tr><td>21500 (1290000p) - 22500 (1350000p) óra</td><td>94</td></tr>
+                <tr><td>22500 (1350000p) - 23500 (1410000p) óra</td><td>95</td></tr>
+                <tr><td>23500 (1410000p) - 24500 (1470000p) óra</td><td>96</td></tr>
+                <tr><td>24500 (1470000p) - 25500 (1530000p) óra</td><td>97</td></tr>
+                <tr><td>25500 (1530000p) - 30000 (1800000p) óra</td><td>98</td></tr>
+                <tr><td>30000 (1800000p) óra és nagyobb</td><td>99</td></tr>
+            </tbody>
+        </table>
+        
+        <a href="index.html" class="link-button">Vissza a főoldalra</a>
+    </div>
+
+</body>
+</html>
